@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Java Docs</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="resources/javaicon.png">
 </head>
 
 <body>
     <nav id="navbar">
-        <a href=""></a>
-        <a href=""></a>
-        <a href=""></a>
-        <a href=""></a>
-        <a href=""></a>
+        <header>
+            Java Lib
+        </header>
+        <a href="#introduction">Introduction</a>
+        <a href="#resources">Resources</a>
+        <a href="#installation">Installation</a>
+        <a href="#getting-started">Getting Started</a>
+        <a href="#api-endpoints">API Endpoints</a>
     </nav>
     <main id="main-doc">
         <h1>Airship Java RESTful Library</h1>
@@ -138,7 +142,7 @@
                 <p>Once you have created a request, you pass it to be executed in the client created earlier.</p>
         </section>
         <!--End of Getting Started section-->
-        <section class="main-section">
+        <section class="main-section" id="api-endpoints">
             <header>
                 <h2>API Endpoints</h2>
             </header>
@@ -208,10 +212,93 @@
     DeviceTypeData deviceTypeData  = DeviceTypeData.of(DeviceType.IOS, DeviceType.ANDROID);
                     </code>
                 </pre>
+                <p>The final part of the PushPayload is DeviceTypes, which defines the platform you’re sending to, e.g., iOS or Android. Messages can be segregated by device types. Set the device types you want to send to using a DeviceTypeData object.</p>
             <h3>Schedules</h3>
-            <h3>A/B Tests</h3>
-            <h3>Channels</h3>
-            <h3>Tags</h3>
+                <h4>Create a Scheduled Notification</h4>
+                <p class="code-snippet-title">Scheduling a push notification:</p>
+                <pre>
+                    <code>
+    SchedulePayload schedulePayload = SchedulePayload.newBuilder()
+        .setName("Morning People")
+        .setSchedule(Schedule.newBuilder()
+            .setScheduledTimestamp(DateTime.parse("2020-06-03T09:15:00Z"))
+            .build())
+        .setPushPayload(PushPayload.newBuilder()
+            .setDeviceTypes(DeviceTypeData.of(DeviceType.IOS, DeviceType.ANDROID))
+            .setNotification(Notifications.alert("Good Day Sunshine"))
+            .setAudience(Selectors.tag("earlyBirds"))
+            .build())
+        .build();
+
+    ScheduleRequest scheduleRequest = ScheduleRequest.newRequest(schedulePayload);
+    Response<ScheduleResponse> response = client.execute(scheduleRequest);
+                    </code>
+                </pre>
+                <h4>Update a Schedule</h4>
+                <p class="code-snippet-title">Updating a scheduled notification:</p>
+                <pre>
+                    <code>
+    SchedulePayload schedulePayload = SchedulePayload.newBuilder()
+        .setName("I would like to subscribe to your newsletter")
+        .setSchedule(Schedule.newBuilder()
+                .setScheduledTimestamp(DateTime.parse("2020-04-01T18:45:00Z"))
+                .build())
+        .setPushPayload(PushPayload.newBuilder()
+                .setDeviceTypes(DeviceTypeData.of(DeviceType.IOS, DeviceType.ANDROID))
+                .setNotification(Notifications.alert("Check your inbox!"))
+                .setAudience(Selectors.tag("intriguing"))
+                .build())
+        .build();
+
+    ScheduleRequest scheduleRequest = ScheduleRequest.newUpdateRequest(schedulePayload, "5cde3564-ead8-9743-63af-821e12337812");
+    Response<ScheduleResponse> response = client.execute(scheduleRequest);
+                    </code>
+                </pre>
+
+                <h4>Lookup Schedule</h4>
+                <p class="code-snippet-title"></p>
+                <pre>
+                    <code>
+    ScheduleListingRequest request = ScheduleListingRequest.newRequest("5cde3564-ead8-9743-63af-821e12337812");
+    Response<ListAllSchedulesResponse> response = client.execute(request);
+    SchedulePayloadResponse schedule = response.getBody().get().getSchedules().get(0);
+
+    // Get the schedule's name
+    Optional<String> name = schedule.getName();
+    // Get the push IDs
+    Set<String> pushIds = schedule.getPushIds();
+    // Get the scheduled time
+    Schedule sched = schedule.getSchedule();
+    // Get the associated push payload
+    PushPayload payload = schedule.getPushPayload();
+    // Get the URL
+    Optional<String> url = schedule.getUrl();
+                    </code>
+                </pre>
+                <p>To lookup a schedule, use the ScheduleListingRequest.newRequest("&lt;schedule_id>") method.</p>
+
+                <h4>List Schedules</h4>
+                <p class="code-snippet-title">List all scheduled notifications:</p>
+                <pre>
+                    <code>
+    ScheduleListingRequest request = ScheduleListingRequest.newRequest();
+    Response<ListAllSchedulesResponse> response = client.execute(request);
+
+    // Get the list of schedules
+    List<SchedulePayloadResponse> schedules = response.getBody().get().getSchedules();
+                    </code>
+                </pre>
+                <p>To view a list of all created schedules, use the ScheduleListingRequest.newRequest() method.</p>
+                
+                <h4>Delete Schedule</h4>
+                <p class="code-snippet-title">Delete schedule request:</p>
+                <pre>
+                    <code>
+    ScheduleDeleteRequest request = ScheduleDeleteRequest.newRequest("schedule_1234");
+    Response<GenericResponse> response = client.execute(request);
+                    </code>
+                </pre>
+                <p>To delete a schedule, use the ScheduleDeleteRequest.newRequest("&lt;schedule_id>") method.</p>
         </section>
         <!--End of the API Endpoints section-->
     </main>
