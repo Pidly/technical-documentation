@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav id="navbar">
+        <a href=""></a>
+        <a href=""></a>
+        <a href=""></a>
+        <a href=""></a>
+        <a href=""></a>
+    </nav>
+    <main id="main-doc">
+        <h1>Airship Java RESTful Library</h1>
+        <section class="main-section" id="introduction">
+            <header>
+                <h2>Introduction</h2>
+            </header>
+            <p>Airship maintains open source server libraries to support customer integrations with their APIs. This is documentation on how to use Airship's Java RESTful Library to interact with Airship's REST APIs.</p>
+        </section>
+        <section class="main-section" id="resources">
+            <header>
+                <h2>Resources</h2>
+            </header>
+            <ul>
+                <li><a href="https://github.com/urbanairship/java-library">Github Repo</a></li>
+                <li><a href="https://docs.airship.com/reference/libraries/java/latest/">Javadocs</a></li>
+                <li><a href="https://docs.airship.com/api/ua/">Airship API Reference</a></li>
+            </ul>
+        </section>
+        <!--End of resources section-->
+        <section class="main-section" id="installation">
+            <header>
+                <h2>Installation</h2>
+            </header>
+            <p>There are currently two methods to install the Java Library. You can install with Maven or manually.</p>
+                <h3>Maven</h3>
+                <p class="code-snippet-title">Example pom.xml changes:</p>
+                <!--Pre tag inside main-section header-->
+                <pre>
+                    <code>
+    &lt;dependency>
+        &lt;groupId>com.urbanairship&lt;/groupId>
+        &lt;artifactId>java-client&lt;/artifactId>
+        &lt;version>VERSION&lt;/version>
+    &lt;/dependency>
+                    </code>
+                </pre>
+                <p>Add the Airship library dependency to your pom.xml.</p>            
+
+                <h3>Manual</h3>
+                <p>To install the Java Library manually, clone the repository, run mvn package, and add the jar. The docs can also be built.</p>
+                <p class="code-snippet-title">Clone the Java Library repo, and build the jar:</p>
+
+                <pre>
+                    <code>
+    mvn package
+                    </code>
+                </pre>
+                <p>
+                    Add the jar, replacing ‘VERSION’ with your desired version number located at a path similar to:
+                </p>
+                <pre>
+                    <code>
+    target/java-client-VERSION.jar
+                    </code>
+                </pre>
+                <p>If you would like a copy of the javadocs, use:</p>
+                <pre>
+                    <code>
+    mvn javadoc:javadoc
+                    </code>
+                </pre>
+        </section>
+        <!--End of installation section-->
+        <section class="main-section" id="getting-started">
+            <header>
+                <h2>Getting Started</h2>
+            </header>
+            <h3>Setting up the Airship Client</h3>
+                <p class="code-snippet-title">
+                    The following is the minimum-viable UrbanAirshipClient configuration:
+                </p>
+                <pre>
+                    <code>
+    UrbanAirshipClient client = UrbanAirshipClient.newBuilder()
+        .setKey("your-app-key-here")
+        .setSecret("your-app-secret-here")
+        .build();
+                    </code>
+                </pre>
+                <p>
+                    The UrbanAirshipClient handles the interaction between the client and the API. The client will throw an exception if there is an issue with the request, or if it is improperly configured.
+                </p>
+                <h3>Connecting to European Servers</h3>
+                <p class="code-snippet-title">Connecting to European Server:</p>
+                <pre>
+                    <code>
+    UrbanAirshipClient client = UrbanAirshipClient.newBuilder()
+        .setKey("your-app-key-here")
+        .setSecret("your-app-secret-here")
+        .setBaseUri(UrbanAirshipClient.EU_URI)
+        .build();
+                    </code>
+                </pre>
+                <h3>Create a Request</h3>
+                <p class="code-snippet-title">Creating a request to the push API:</p>
+                <pre>
+                    <code>
+    PushPayload payload = PushPayload.newBuilder()
+        .setAudience(Selectors.iosChannel("ios_channel"))
+        .setNotification(Notifications.alert("Here's a push!"))
+        .setDeviceTypes(DeviceTypeData.of(DeviceType.IOS))
+        .build();
+
+    PushRequest request = PushRequest.newRequest(payload);
+                    </code>
+                </pre>
+                <h3>Send the request</h3>
+                <p class="code-snippet-title">Executing the push request:</p>
+                <pre>
+                    <code>
+    Response<PushResponse> response = null;
+    try {
+        response = client.execute(request);
+        logger.debug(String.format("Response %s", response.toString()));
+    } catch (IOException e) {
+        logger.error("IOException in API request " + e.getMessage());
+    }
+                    </code>
+                </pre>
+                <p>Once you have created a request, you pass it to be executed in the client created earlier.</p>
+        </section>
+        <!--End of Getting Started section-->
+        <section class="main-section">
+            <header>
+                <h2>API Endpoints</h2>
+            </header>
+            <h3>Push</h3>
+                <p>The PushPayload has three components:</p>
+                <ul>
+                    <li>Audience and Selectors</li>
+                    <li>Notifications</li>
+                    <li>Device Types</li>
+                </ul>
+                <p>The first is the Audience. The audience is composed of Selectors, which can be compound or atom</p>
+                <h4>Audience and Selectors</h4>
+                <p class="code-snippet-title">Send to your audience with dogs tag:</p>
+                <pre>
+                    <code>
+    Selectors.tag("kittens"); 
+                    </code>
+                </pre>
+                <p>The Selectors and DeviceType classes provide factory methods that can be used together to create an Audience Selector.</p>
+                <p class="code-snippet-title">A more complex audience query:</p>
+                <pre>
+                    <code>
+    Selector andSelector = Selectors.and(Selectors.tag("puppies"), Selectors.tag("kittens"));
+    Selector notSelector = Selectors.not(Selectors.tag("fish"));
+    Selector compound = Selectors.or(andSelector, notSelector);
+                    </code>
+                </pre>
+                <p>More complex logic is possible.</p>
+                <h4>Notifications</h4>
+                <p class="code-snippet-title">An example of an iOS notification implementing expiry and interactive notifications:</p>
+                <pre>
+                    <code>
+    PushExpiry expiry = PushExpiry.newBuilder()
+        .setExpirySeconds(3600)
+        .build();
+
+    Interactive interactive = Interactive.newBuilder()
+        .setType("ua_yes_no_foreground")
+        .setButtonActions(ImmutableMap.of(
+            "yes",
+            Actions.newBuilder()
+                .addTags(new AddTagAction(TagActionData.single("tag1")))
+                .build(),
+            "no",
+            Actions.newBuilder()
+                .addTags(new AddTagAction(TagActionData.single("tag2")))
+                .build()))
+        .build();
+
+    IOSDevicePayload iosPayload = IOSDevicePayload.newBuilder()
+        .setAlert("alert")
+        .setExpiry(expiry)
+        .setInteractive(interactive)
+        .build();
+
+    PushPayload payload = PushPayload.newBuilder()
+        .setAudience(Selectors.iosChannel("9c36e8c7-5a73-47c0-9716-99fd3d4197d5"))
+        .setNotification(Notifications.notification(iosPayload))
+        .setDeviceTypes(DeviceTypeData.of(DeviceType.IOS))
+        .build();
+                    </code>
+                </pre>
+                <h4>Device Types</h4>
+                <p class="code-snippet-title">Here’s an example of setting the device types to iOS and Android:</p>
+                <pre>
+                    <code>
+    DeviceTypeData deviceTypeData  = DeviceTypeData.of(DeviceType.IOS, DeviceType.ANDROID);
+                    </code>
+                </pre>
+            <h3>Schedules</h3>
+            <h3>A/B Tests</h3>
+            <h3>Channels</h3>
+            <h3>Tags</h3>
+        </section>
+        <!--End of the API Endpoints section-->
+    </main>
+</body>
+</html>
