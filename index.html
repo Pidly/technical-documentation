@@ -7,18 +7,32 @@
     <title>Java Docs</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="resources/javaicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <nav id="navbar">
-        <header>
-            Java Lib
-        </header>
-        <a href="#introduction">Introduction</a>
-        <a href="#resources">Resources</a>
-        <a href="#installation">Installation</a>
-        <a href="#getting-started">Getting Started</a>
-        <a href="#api-endpoints">API Endpoints</a>
+        <div id="navbar-container">
+            <header>
+                Java Library
+            </header>
+            <a href="#introduction">Introduction</a>
+            <a href="#resources">Resources</a>
+            <a href="#installation">Installation</a>
+            <a href="#maven" class="navbar-sub-category">Maven</a>
+            <a href="#manual" class="navbar-sub-category">Manual</a>
+            <a href="#getting-started">Getting Started</a>
+            <a href="#setting-up-client" class="navbar-sub-category">Setting up the Airship Client</a>
+            <a href="#euro-servers" class="navbar-sub-category">Connecting to European Servers</a>
+            <a href="#create-request" class="navbar-sub-category">Create a Request</a>
+            <a href="#send-request" class="navbar-sub-category">Send the request</a>
+            <a href="#api-endpoints">API Endpoints</a>
+            <a href="#push" class="navbar-sub-category">Push</a>
+            <a href="#schedules" class="navbar-sub-category">Schedules</a>
+        </div>
     </nav>
     <main id="main-doc">
         <h1>Airship Java RESTful Library</h1>
@@ -44,7 +58,7 @@
                 <h2>Installation</h2>
             </header>
             <p>There are currently two methods to install the Java Library. You can install with Maven or manually.</p>
-                <h3>Maven</h3>
+                <h3 id="maven">Maven</h3>
                 <p class="code-snippet-title">Example pom.xml changes:</p>
                 <!--Pre tag inside main-section header-->
                 <pre>
@@ -58,7 +72,7 @@
                 </pre>
                 <p>Add the Airship library dependency to your pom.xml.</p>            
 
-                <h3>Manual</h3>
+                <h3 id="manual">Manual</h3>
                 <p>To install the Java Library manually, clone the repository, run mvn package, and add the jar. The docs can also be built.</p>
                 <p class="code-snippet-title">Clone the Java Library repo, and build the jar:</p>
 
@@ -87,7 +101,7 @@
             <header>
                 <h2>Getting Started</h2>
             </header>
-            <h3>Setting up the Airship Client</h3>
+            <h3 id="setting-up-client">Setting up the Airship Client</h3>
                 <p class="code-snippet-title">
                     The following is the minimum-viable UrbanAirshipClient configuration:
                 </p>
@@ -102,7 +116,7 @@
                 <p>
                     The UrbanAirshipClient handles the interaction between the client and the API. The client will throw an exception if there is an issue with the request, or if it is improperly configured.
                 </p>
-                <h3>Connecting to European Servers</h3>
+                <h3 id="euro-servers">Connecting to European Servers</h3>
                 <p class="code-snippet-title">Connecting to European Server:</p>
                 <pre>
                     <code>
@@ -113,7 +127,8 @@
         .build();
                     </code>
                 </pre>
-                <h3>Create a Request</h3>
+
+                <h3 id="create-request">Create a Request</h3>
                 <p class="code-snippet-title">Creating a request to the push API:</p>
                 <pre>
                     <code>
@@ -126,7 +141,8 @@
     PushRequest request = PushRequest.newRequest(payload);
                     </code>
                 </pre>
-                <h3>Send the request</h3>
+
+                <h3 id="send-request">Send the request</h3>
                 <p class="code-snippet-title">Executing the push request:</p>
                 <pre>
                     <code>
@@ -146,7 +162,7 @@
             <header>
                 <h2>API Endpoints</h2>
             </header>
-            <h3>Push</h3>
+            <h3 id="push">Push</h3>
                 <p>The PushPayload has three components:</p>
                 <ul>
                     <li>Audience and Selectors</li>
@@ -213,7 +229,8 @@
                     </code>
                 </pre>
                 <p>The final part of the PushPayload is DeviceTypes, which defines the platform you’re sending to, e.g., iOS or Android. Messages can be segregated by device types. Set the device types you want to send to using a DeviceTypeData object.</p>
-            <h3>Schedules</h3>
+
+            <h3 id="schedules">Schedules</h3>
                 <h4>Create a Scheduled Notification</h4>
                 <p class="code-snippet-title">Scheduling a push notification:</p>
                 <pre>
